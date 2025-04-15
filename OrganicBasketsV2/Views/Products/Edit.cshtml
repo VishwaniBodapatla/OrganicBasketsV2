@@ -1,0 +1,150 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model OrganicBasketsV2.Models.Product
+<h1>Edit Product</h1>
+
+@if (Model is null)
+{
+    <p>Product not found</p>
+}
+else
+{
+
+<form method="post">
+    <div class="mt-3">
+        <label class="form-label">ID</label>
+        <input type="text" class="form-control" asp-for="ProductId" readonly />
+    </div>
+    <div class="mt-3">
+        <label class="form-label">Product Name</label>
+        <input type="text" class="form-control" asp-for="ProductName" />
+    </div>
+    <div class="mt-3">
+        <label class="form-label" for="Category">Category</label>
+        <input list="categories" class="form-control" asp-for="Category" id="Category" placeholder="Select or type a category" />
+        <datalist id="categories">
+            <option value="Dairy Products"></option>
+            <option value="Meat and Meat Products"></option>
+            <option value="Fruits and Vegetables"></option>
+            <option value="Beverages"></option>
+            <option value="Snacks and Sweets"></option>
+            <option value="Frozen Foods"></option>
+            <option value="Baked Goods"></option>
+            <option value="Sauces and Condiments"></option>
+            <option value="Household and Cleaning Products"></option>
+            <option value="Personal Care and Cosmetics"></option>
+            <option value="Health and Hygiene"></option>
+            <option value="Canned Goods"></option>
+            <option value="Pet Care"></option>
+            <option value="Miscellaneous Products"></option>
+            <option value="Alcoholic Beverages"></option>
+            <option value="Miscellaneous Items"></option>
+        </datalist>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" asp-for="Description"></textarea>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Price</label>
+        <input type="number" class="form-control" asp-for="Price" step="0.01" />
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Stock Quantity</label>
+        <input type="number" class="form-control" asp-for="Stock" />
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Image</label>
+        <input type="text" class="form-control" asp-for="ProductImage" />
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label" for="Packaging_Unit">Packaging Unit</label>
+            <input list="packaging-units" class="form-control" asp-for="PackagingUnit" id="Packaging_Unit" placeholder="Select or type a Packaging Unit" />
+        <datalist id="packaging-units">
+            <option value="Pound (lbs)"></option>
+            <option value="Ounces (oz)"></option>
+            <option value="Gallons (gal)"></option>
+            <option value="Fluid ounces (fl oz)"></option>
+            <option value="Cups"></option>
+            <option value="Milliliters"></option>
+        </datalist>
+    </div>
+
+        <div class="mt-3">
+            <label class="form-label" for="PartOfDiet">Part of which Diet</label>
+            <select class="form-control" asp-for="PartOfDiet" multiple>
+                <option value="Balanced">Balanced</option>
+                <option value="Low_Carb">Low Carb</option>
+                <option value="Low_Sodium">Low Sodium</option>
+                <option value="Low-Glycemic Diet">Low-Glycemic Diet</option>
+                <option value="Low-Carb or Keto Diet">Low-Carb or Keto Diet</option>
+                <option value="DASH Diet">DASH Diet</option>
+                <option value="Heart-Healthy Diet">Heart-Healthy Diet</option>
+                <option value="Mediterranean Diet">Mediterranean Diet</option>
+                <option value="Low-Calorie Diet">Low-Calorie Diet</option>
+            </select>
+        </div>
+
+        <div class="mt-3">
+            <label class="form-label" for="RichInHealthBenefits">what nutrients does it provide</label>
+            <select class="form-control" asp-for="RichInHealthBenefits" multiple>
+                <option value="Carbohydrates">Carbohydrates</option>
+                <option value="Proteins">Proteins</option>
+                <option value="Healthy_Fats">Healthy Fats</option>
+                <option value="Fiber">Fiber</option>
+                <option value="Calcium">Calcium</option>
+                <option value="Iron">Iron</option>
+                <option value="Magnesium">Magnesium</option>
+                <option value="Potassium">Potassium</option>
+                <option value="Zinc">Zinc</option>
+                <option value="Omega-3 Fatty Acids">Omega-3 Fatty Acids</option>
+                <option value="Vitamin_A">Vitamin A</option>
+                <option value="Vitamin_B1">Vitamin B1 (Thiamine)</option>
+                <option value="Vitamin_B2">Vitamin B2 (Riboflavin)</option>
+                <option value="Vitamin_B3">Vitamin B3 (Niacin)</option>
+                <option value="Vitamin_B5">Vitamin B5 (Pantothenic Acid)</option>
+                <option value="Vitamin_B6">Vitamin B6 (Pyridoxine)</option>
+                <option value="Vitamin_B7">Vitamin B7 (Biotin)</option>
+                <option value="Vitamin_B9">Vitamin B9 (Folate/Folic Acid)</option>
+                <option value="Vitamin_B12">Vitamin B12 (Cobalamin)</option>
+                <option value="Vitamin_C">Vitamin C</option>
+                <option value="Vitamin_D">Vitamin D</option>
+                <option value="Vitamin_E">Vitamin E</option>
+                <option value="Vitamin_K">Vitamin K</option>
+            </select>
+        </div>
+
+        <div class="mt-3">
+            <label class="form-label" for="IsVegan">Is this product Vegan?</label>
+            <select class="form-control" asp-for="IsVegan" id="IsVegan">
+                <option value="">Select if it is Vegan or not</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+        </div>
+
+        <div class="mt-3">
+            <label class="form-label" for="IsGlutenFree">Is this product IsGlutenFree?</label>
+            <select class="form-control" asp-for="IsGlutenFree" id="IsGlutenFree">
+                <option value="">Select If it is gluten free or not</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+        </div>
+
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+
+</form>
+}
+

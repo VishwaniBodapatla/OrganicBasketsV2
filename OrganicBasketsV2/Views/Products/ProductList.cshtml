@@ -1,0 +1,86 @@
+﻿    @model IEnumerable<OrganicBasketsV2.Models.Product>
+@* @{
+    var cartItems = ViewData["CartItems"] as List<OrganicBasketsV2.Models.CartItemViewModel>;
+} *@
+
+
+<div class="container">
+    <div class="row">
+        <!-- Product Listing Section -->
+        <div class="col-12">
+            <h1 class="text-center mb-5">Our Organic Products</h1>
+            <div class="row">
+                @foreach (var product in Model)
+                {
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                        <div class="card shadow-sm" style="border-radius: 15px; background-color: rgba(255, 255, 255, 0.8);">
+                            <img src="@product.ProductImage" class="card-img-top" alt="@product.ProductName"
+                                 style="height: 200px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+                            <div class="card-body">
+                                <h5 class="card-title text-success">@product.ProductName</h5>
+                                <p class="card-text text-muted">@product.Description</p>
+                                <p class="card-text">
+                                    <strong>Category:</strong> @product.Category<br />
+                                    <strong>Price:</strong> @product.Price.ToString("C")<br />
+                                    <strong>Stock:</strong> @product.Stock
+                                </p>
+
+                                <!-- Quantity input control -->
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="decreaseQuantity('@product.ProductId')">-</button>
+                                    <input type="number" id="quantity-@product.ProductId" class="form-control mx-2" style="width: 60px;" value="1" min="1" max="@product.Stock" />
+                                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="increaseQuantity('@product.ProductId', @product.Stock)">+</button>
+                                </div>
+
+                                <!-- Stock warning message -->
+                                <div id="stock-warning-@product.ProductId" style="color: red; font-size: 12px; display: none;">
+                                    <strong>Warning:</strong> You cannot add more than the available stock.
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-3">
+                                    <!-- Add to Cart button -->
+                                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                        <input type="hidden" name="ProductId" value="@product.ProductId" />
+                                        <input type="hidden" name="Quantity" id="hidden-quantity-@product.ProductId" value="1" />
+                                        <button type="submit" class="btn btn-outline-success btn-sm">Add to Cart</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add JavaScript at the bottom of the page -->
+<script>
+    function increaseQuantity(productId, stock) {
+        let quantityInput = document.getElementById('quantity-' + productId);
+        let currentQuantity = parseInt(quantityInput.value);
+        let stockWarning = document.getElementById('stock-warning-' + productId);
+
+        if (currentQuantity < stock) {
+            // Reset the warning if the quantity is within the available stock
+            stockWarning.style.display = 'none';
+            quantityInput.value = currentQuantity + 1;
+            document.getElementById('hidden-quantity-' + productId).value = quantityInput.value;
+        } else {
+            // Display warning if the quantity exceeds available stock
+            stockWarning.style.display = 'block';
+        }
+    }
+
+    function decreaseQuantity(productId) {
+        let quantityInput = document.getElementById('quantity-' + productId);
+        let currentQuantity = parseInt(quantityInput.value);
+        let stockWarning = document.getElementById('stock-warning-' + productId);
+
+        if (currentQuantity > 1) {
+            quantityInput.value = currentQuantity - 1;
+            document.getElementById('hidden-quantity-' + productId).value = quantityInput.value;
+            stockWarning.style.display = 'none'; // Hide warning when quantity is valid again
+        }
+    }
+</script>

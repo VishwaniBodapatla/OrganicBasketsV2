@@ -1,0 +1,128 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model IEnumerable<OrganicBasketsV2.Models.ProductAndCartViewModel>
+
+<div id="cart-partial">
+    <h1>Your Cart</h1>
+
+    @if (Model.Any())
+    {
+        <div class="cart-items-list" id="cart-items-list">
+            @foreach (var item in Model)
+            {
+                <div class="cart-item" id="cart-item-@item.Product.ProductId">
+                    <div class="cart-item-image">
+                        <img src="@item.Product.ProductImage" alt="@item.Product.ProductName" style="width: 100px; height: 100px; object-fit: cover;" />
+                    </div>
+                    <div class="cart-item-details">
+                        <h5>@item.Product.ProductName</h5>
+                        <p>@item.Product.Description</p>
+                        <p>
+                            <strong>Price:</strong> @item.Product.Price.ToString("C") per @item.Product.PackagingUnit
+                        </p>
+                        <p>
+                            <strong>Quantity:</strong>
+                            <button class="btn btn-sm btn-danger update-quantity" data-product-id="@item.Product.ProductId" data-action="decrement">-</button>
+                            <span id="quantity-@item.Product.ProductId">@item.Cart.Quantity</span>
+                            <button class="btn btn-sm btn-success update-quantity" data-product-id="@item.Product.ProductId" data-action="increment">+</button>
+                        </p>
+                        <p>
+                            <strong>Total Price:</strong>
+                            <span id="total-price-@item.Product.ProductId" data-price="@item.Product.Price">
+                                @(item.Cart.Quantity * item.Product.Price).ToString("C")
+                            </span>
+                        </p>
+                    </div>
+                    <div class="cart-item-actions">
+                        <button class="btn btn-danger btn-sm remove-item" data-product-id="@item.Product.ProductId">Remove</button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Proceed to Checkout button placed below the items -->
+        <div class="mt-3">
+            <a asp-controller="Checkout" asp-action="Index" class="btn btn-primary">Proceed to Checkout</a>
+        </div>
+    }
+    else
+    {
+        <p>Your cart is empty.</p>
+    }
+</div>
+
+<script>
+    // Handle updating the quantity of an item (increment or decrement)
+    document.querySelectorAll(".update-quantity").forEach(button => {
+        button.addEventListener("click", async function () {
+            const productId = this.dataset.productId;
+            const action = this.dataset.action;
+            const quantityElement = document.getElementById(`quantity-${productId}`);
+            const totalPriceElement = document.getElementById(`total-price-${productId}`);
+
+            let currentQuantity = parseInt(quantityElement.textContent);
+            const unitPrice = parseFloat(totalPriceElement.dataset.price);
+
+            // Adjust the quantity based on the action
+            if (action === "increment") {
+                currentQuantity++;
+            } else if (action === "decrement") {
+                currentQuantity--;
+            }
+
+            // If quantity becomes 0, confirm removal
+            if (currentQuantity === 0) {
+                const confirmed = confirm("Do you want to remove this item from the cart?");
+                if (!confirmed) {
+                    return; // Abort if the user cancels the removal
+                }
+            }
+
+            // Update the quantity in the backend
+            const response = await fetch(`/Cart/UpdateCartQuantity`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ productId, quantity: currentQuantity })
+            });
+
+            if (response.ok) {
+                if (currentQuantity === 0) {
+                    // If quantity is 0, remove the item
+                    document.getElementById(`cart-item-${productId}`).remove();
+                } else {
+                    // Update the quantity and total price dynamically
+                    quantityElement.textContent = currentQuantity;
+                    totalPriceElement.textContent = (currentQuantity * unitPrice).toFixed(2);
+                }
+            } else {
+                alert("Failed to update cart. Please try again.");
+            }
+        });
+    });
+
+    // Handle removing an item from the cart
+    document.querySelectorAll(".remove-item").forEach(button => {
+        button.addEventListener("click", async function () {
+            const productId = this.dataset.productId;
+
+            // Send the remove request to the server
+            const response = await fetch(`/Cart/RemoveFromCart?productId=${productId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            if (response.ok) {
+                // If successful, remove the item from the DOM
+                const cartItemElement = document.getElementById(`cart-item-${productId}`);
+                cartItemElement.remove();
+            } else {
+                alert("Failed to remove item. Please try again.");
+            }
+        });
+    });
+</script>
+
