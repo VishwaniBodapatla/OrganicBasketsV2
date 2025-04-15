@@ -3,6 +3,7 @@ This project uses Entity Framework Core for database access. Below are the steps
 
 **SQL Script Reference**
 You can find the full database schema and data in this separate GitHub repository:
+https://github.com/VishwaniBodapatla/Vishwani-ASP.Net/blob/main/scripts_OrganicDB_V1.sql
 
 **Step 1: Install EF Core CLI Tools**
 If you haven't already, install the EF Core CLI:
