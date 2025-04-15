@@ -1,3 +1,70 @@
+Project Setup: EF Core + Scaffolding Instructions
+This project uses Entity Framework Core for database access. Below are the steps to install EF Core packages and scaffold the database using an existing .sql script hosted in another repository.
+
+SQL Script Reference
+You can find the full database schema and data in this separate GitHub repository:
+
+Step 1: Install EF Core CLI Tools
+If you haven't already, install the EF Core CLI:
+
+bash
+Copy
+Edit
+dotnet tool install --global dotnet-ef
+
+Run dotnet ef to verify it's installed correctly.
+
+Step 2: Install Required EF Core NuGet Packages
+Install the necessary EF Core packages for your database provider (e.g., SQL Server):
+
+bash
+Copy
+Edit
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Design
+💡 If you're using another database (e.g., PostgreSQL or SQLite), install the relevant provider instead.
+
+ Step 3: Scaffold the Database Context and Models
+Make sure your database is restored using the .sql file from the linked repo. Once it's available locally, use EF Core's reverse engineering to scaffold the models.
+
+bash
+Copy
+Edit
+dotnet ef dbcontext scaffold "Server=YOUR_SERVER;Database=YOUR_DATABASE;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -o Models -f
+🔧 Replace:
+YOUR_SERVER with your SQL Server name (e.g., localhost, .\SQLEXPRESS, etc.)
+
+YOUR_DATABASE with the name of your restored database
+
+Step 4: Project Structure
+After scaffolding, your project will have:
+
+Copy
+Edit
+/Models
+  ├── YourDbContext.cs
+  └── AllEntityModels.cs
+
+Step 5: Run the Project
+Make sure to configure your DbContext in Startup.cs or Program.cs like this:
+
+csharp
+Copy
+Edit
+services.AddDbContext<YourDbContext>(options =>
+    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+Also, ensure your appsettings.json contains:
+
+json
+Copy
+Edit
+"ConnectionStrings": {
+  "DefaultConnection": "Server=YOUR_SERVER;Database=YOUR_DATABASE;Trusted_Connection=True;"
+}
+
+
+
+
 1.	Home Page
 Note: Since you are not yet logged in, you don’t see add to card option on items.
 ![image](https://github.com/user-attachments/assets/ba5f8c22-9c3c-4c6c-b745-8d0bb4044aa9)
